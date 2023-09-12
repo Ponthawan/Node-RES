@@ -26,7 +26,7 @@ app.get('/books', (req, res) => {
 
 //route to get a book by id
 app.get('/books/:id', (req, res) => {
-    db.get('SELECT * FROM books WHERE id = ?', req.params.id, (err, rows) => {
+    db.get('SELECT * FROM books WHERE id = ?', req.params.id, (err, row) => {
         if(err) {
             res.status(500).send(err);
         } else {
@@ -42,10 +42,11 @@ app.get('/books/:id', (req, res) => {
 //route to create a new book
 app.post('/books' , (req, res) => {
     const book = req.body;
-    db.run('INSERT INTO books (title, author) VALUES (?, ?)', book.title, book.author, req.params.id , function(err) {
+    db.run('INSERT INTO books (title, author) VALUES (?, ?)', book.title, book.author, function(err) {
         if (err) {
             res.status(500).send(err);
         } else {
+
             book.id = this.lastID;
             res.send(book);
         }
@@ -53,7 +54,7 @@ app.post('/books' , (req, res) => {
 });
 
 //route to update a book
-app.post('/books/:id' , (req, res) => {
+app.put('/books/:id' , (req, res) => {
     const book = req.body;
     db.run('UPDATE books SET title = ?, author = ? WHERE id = ? ', book.title, book.author, req.params.id , function(err) {
         if (err) {
